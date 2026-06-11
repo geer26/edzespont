@@ -1,0 +1,2 @@
+FROM redis:7.2-alpine
+RUN echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf

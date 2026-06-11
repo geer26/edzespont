@@ -1,0 +1,14 @@
+FROM node:lts
+#FROM node:18.18
+#FROM node:22-alpine3.20
+
+WORKDIR /app
+RUN mkdir -p ./node_modules && chown -R node:node ./node_modules
+
+COPY . .
+
+RUN npm install
+RUN npm install -g vite
+
+#CMD npm run dev
+CMD ["sh", "-c", "npm install && npm run dev"]

@@ -1,0 +1,41 @@
+services:
+
+#< ----------------------- >
+
+  edzespont_cache:
+
+    hostname: edzespont_cache
+
+    build: ./cache/.
+
+    # env_file:
+    #   - ./envs/.uni.env
+
+    volumes:
+      - ./cache/conf:/usr/local/etc/redis:ro
+
+    restart: no
+
+#< ----------------------- >
+
+  edzespont_frontend:
+
+    container_name: edzespont_frontend
+
+    hostname: edzespont_frontend
+
+    build:
+        context: ./frontend
+        dockerfile: ./dockerfile.dev
+
+    volumes:
+        - ./frontend/:/app
+        - /app/node_modules
+        - ./frontend/node_modules:/app/node_modules
+
+    restart: no
+
+    ports:
+        - "5173:5173"
+
+    network_mode: "host"
