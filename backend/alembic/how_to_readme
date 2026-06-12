@@ -1,0 +1,109 @@
+cd to /backend
+source venv/bin/activate
+
+docker compose -f edzespont_dev.yml run edzespont_migrate
+
+📌 When do you make migrations?
+✅ YES — whenever your models change
+
+You create a migration when you:
+
+Schema changes:
+add/remove columns
+rename fields
+change types (str → int, etc.)
+add constraints (unique, nullable, etc.)
+add/remove tables
+❌ NOT needed for:
+changing Python-only logic
+FastAPI routes
+business logic
+validations not stored in DB
+🔁 Typical workflow (VERY IMPORTANT)
+1. Change your model
+email: str
+phone: str | None = None
+2. Create migration
+alembic revision --autogenerate -m "add phone to user"
+3. Review migration (IMPORTANT step)
+
+Open:
+
+alembic/versions/xxx_add_phone_to_user.py
+
+Make sure it makes sense.
+
+4. Apply migration
+alembic upgrade head
+⚠️ Golden rule (don’t skip this)
+
+Never blindly run:
+
+alembic upgrade head
+
+without checking the generated migration.
+
+🧠 Why Alembic showed “removed table users”
+
+This is important:
+
+It usually means one of these:
+
+1. Model not imported properly in env.py
+
+or
+
+2. SQLModel metadata not fully loaded when Alembic runs
+✅ Best practice fix (do this now)
+
+In alembic/env.py, ensure:
+
+from app import models  # IMPORTANT: triggers model registration
+
+NOT just:
+
+from app.models import User
+
+You want ALL models loaded.
+
+🚀 Production workflow summary
+
+You will always do this cycle:
+
+1. edit models.py
+2. alembic revision --autogenerate
+3. check migration file
+4. alembic upgrade head
+💡 Extra tips (important)
+✔ Use meaningful migration names
+
+Bad:
+
+"update"
+
+Good:
+
+"add user profile fields"
+"create orders table"
+✔ Never edit DB manually in production
+
+Always go through Alembic.
+
+✔ If something breaks
+
+You can reset locally:
+
+alembic downgrade base
+alembic upgrade head
+👍 You are now at the real “correct setup” stage
+
+Your system is now properly working.
+
+If you want next step, I can help you upgrade this to:
+
+async SQLModel + asyncpg migrations (modern FastAPI style)
+automatic timestamp mixins (created_at, updated_at)
+Docker + migration auto-run on deploy
+multi-env setup (dev/staging/prod)
+
+Just tell me 👍

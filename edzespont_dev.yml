@@ -93,3 +93,28 @@ services:
 
 #    depends_on:
 #      - repforge_cache
+
+
+#< ----------------------- >
+
+
+  edzespont_migrate:
+    container_name: edzespont_migrate
+    hostname: edzespont_migrate
+
+    build:
+        context: ./backend
+        dockerfile: ./dockerfile.dev
+
+    volumes:
+        - ./backend/:/edzespont_backend/:rw
+
+    env_file:
+        - ./envs/.dev_env
+
+    depends_on:
+        - edzespont_db
+
+    command: alembic upgrade head
+
+    restart: "no"
