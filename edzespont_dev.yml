@@ -50,12 +50,23 @@ services:
       ports:
         - "5432:5432"
       volumes:
-        - ./db/data:/var/lib/postgresql/data
-        # - ./db/init:/docker-entrypoint-initdb.d
+        # - ./db/data:/var/lib/postgresql/data
+        - ./db/data:/var/lib/postgresql/18/docker
+        - ./db/init:/docker-entrypoint-initdb.d
+      shm_size: 128mb
       environment:
         - POSTGRES_USER=geer26
-        - POSTGRES_PASSWORD=726354Valami01
-        - POSTGRES_DB=test_db
+        - POSTGRES_PASSWORD=726354Valami01?
+        - POSTGRES_DB=edzespont
+
+
+  adminer:
+      image: adminer
+      restart: no
+      ports:
+        - 8080:8080
+
+
 
 #< ----------------------- >
 
@@ -65,7 +76,7 @@ services:
 
     hostname: edzespont_backend2
 
-    build: 
+    build:
         context: ./backend
         dockerfile: ./dockerfile.dev
 
