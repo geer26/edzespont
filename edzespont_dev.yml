@@ -18,6 +18,8 @@ services:
 
 #< ----------------------- >
 
+#< ----------------------- >
+
   edzespont_frontend:
 
     container_name: edzespont_frontend
@@ -40,7 +42,6 @@ services:
 
     network_mode: "host"
 
-
 #< ----------------------- >
 
   edzespont_db:
@@ -55,3 +56,29 @@ services:
         - POSTGRES_USER=geer26
         - POSTGRES_PASSWORD=726354Valami01
         - POSTGRES_DB=test_db
+
+#< ----------------------- >
+
+  edzespont_backend:
+
+    container_name: edzespont_backend
+
+    hostname: edzespont_backend2
+
+    build: 
+        context: ./backend
+        dockerfile: ./dockerfile.dev
+
+    volumes:
+      - ./backend/:/edzespont_backend/:rw
+
+    env_file:
+      - ./envs/.dev_env
+
+#    restart: always
+
+    ports:
+      - "5001:5001"
+
+#    depends_on:
+#      - repforge_cache
