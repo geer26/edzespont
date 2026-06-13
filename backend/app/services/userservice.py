@@ -19,4 +19,10 @@ class UserService():
         new_user = user_repo.add_user(user, session)
         return user_schema.UserRead.model_validate(new_user)
 
+    async def delete_user(self, id: int, session):
+        users = user_repo.delete_user(id, session)
+        if users is None:
+            return []
+        return [user_schema.UserRead.model_validate(u) for u in users]
+
 user_service = UserService()

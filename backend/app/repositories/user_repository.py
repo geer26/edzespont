@@ -34,3 +34,14 @@ def add_user(user:user_schema.UserCreate, session):
     session.refresh(new_user)
 
     return new_user
+
+
+def delete_user(id: int, session):
+    statement = select(User).where(User.id == id)
+    user = session.exec(statement).one_or_none()
+    if not user:
+        return None
+    session.delete(user)
+    session.commit()
+    remaining = session.exec(select(User)).all()
+    return remaining
