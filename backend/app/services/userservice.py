@@ -21,7 +21,7 @@ class UserService():
     async def delete_user(self, id: int, session):
         users = user_repo.delete_user(id, session)
         if users is None:
-            return []
+            raise HTTPException(status_code=404, detail="User not found")
         return [user_schema.UserRead.model_validate(u) for u in users]
 
 user_service = UserService()
