@@ -18,6 +18,10 @@ class User(SQLModel, table=True):
 
     password_hash: str = Field(nullable=False)
 
+    api_key: str
+
+    fingerprint: str
+
     is_active: bool = Field(default=True, nullable=False)
 
     created_at: datetime = Field(
