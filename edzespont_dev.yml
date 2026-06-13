@@ -42,6 +42,10 @@ services:
 
     network_mode: "host"
 
+    depends_on:
+        edzespont_backend:
+          condition: service_started
+
 #< ----------------------- >
 
   edzespont_db:
@@ -65,6 +69,9 @@ services:
       restart: no
       ports:
         - 8080:8080
+      depends_on:
+        edzespont_db:
+          condition: service_started
 
 
 
@@ -91,8 +98,13 @@ services:
     ports:
       - "5001:5001"
 
-#    depends_on:
-#      - repforge_cache
+    depends_on:
+        edzespont_db:
+          condition: service_started
+        edzespont_cache:
+          condition: service_started
+
+
 
 
 #< ----------------------- >
@@ -112,9 +124,10 @@ services:
     env_file:
         - ./envs/.dev_env
 
-    depends_on:
-        - edzespont_db
-
     command: alembic upgrade head
 
     restart: "no"
+
+    depends_on:
+        edzespont_db:
+          condition: service_started

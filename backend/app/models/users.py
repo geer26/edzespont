@@ -21,10 +21,16 @@ class User(SQLModel, table=True):
     is_active: bool = Field(default=True, nullable=False)
 
     created_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=False), server_default=func.now(), nullable=False)
+        default=None,
+        sa_column=Column(
+            DateTime(timezone=False),
+            server_default=func.now(),
+            nullable=False,
+        )
     )
 
     updated_at: datetime = Field(
+        default=None,
         sa_column=Column(
             DateTime(timezone=False),
             server_default=func.now(),

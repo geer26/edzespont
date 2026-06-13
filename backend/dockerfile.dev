@@ -5,6 +5,5 @@ WORKDIR /edzespont_backend
 COPY requirements.txt /edzespont_backend
 RUN pip3 install --upgrade pip && pip3 install -r requirements.txt --no-cache-dir
 RUN pip install --upgrade pip wheel setuptools requests
-#CMD ["fastapi", "dev", "./app", "--port", "5001"]
 #CMD ["uvicorn", "app.api:app", "--host", "0.0.0.0", "--port", "5001"]
 CMD ["uvicorn", "app.api:app", "--host", "0.0.0.0", "--port", "5001", "--reload"]
