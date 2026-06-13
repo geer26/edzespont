@@ -1,5 +1,6 @@
 from sqlmodel import create_engine
 from sqlmodel import Session as SQLModelSession
+from sqlmodel import SQLModel
 from typing import Annotated
 from fastapi import Depends
 
@@ -13,9 +14,16 @@ def init_db():
     """
     Called during lifespan startup.
     """
+    
     global engine, SessionLocal
 
     settings = get_settings()
+
+    engine = create_engine(
+            get_settings().db_connection_string
+        )
+    
+    SQLModel.metadata.create_all(engine)
 
     engine = create_engine(
         settings.db_connection_string

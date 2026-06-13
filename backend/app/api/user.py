@@ -1,18 +1,23 @@
 from fastapi import APIRouter, Request, Body, Cookie, Header
-from app.core.config import SettingsDep
 from app.core.db import DbSessionDep
 from app.models import User
+from app.schemas import user_schema
 from app.services import user_service
 
 
 user_router = APIRouter()
 
 
-@user_router.get("/users")
-async def read_all_user(session: DbSessionDep) -> list[User]:
+@user_router.get("/users", response_model=list[user_schema.UserRead])
+async def read_all_user(session: DbSessionDep):
     return await user_service.get_all_users(session)
 
 
-@user_router.get("/users/{userid}")
-async def gt_user_by_id(userid: int, session: DbSessionDep) -> User:
+@user_router.get("/users/{userid}", response_model=user_schema.UserRead)
+async def get_user_by_id(userid: int, session: DbSessionDep):
     return await user_service.get_user_by_id(userid, session)
+
+
+@user_router.post("/users", response_model=user_schema.UserRead)
+async def add_user(user: user_schema.UserCreate, session: DbSessionDep):
+    return await user_service.add_user(user, session)
