@@ -1,4 +1,3 @@
-from app.models import User
 from fastapi import HTTPException
 from app.repositories import user_repository as user_repo
 from app.schemas import user_schema

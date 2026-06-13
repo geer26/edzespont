@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request, Body, Cookie, Header
 from app.core.db import DbSessionDep
-from app.models import User
 from app.schemas import user_schema
 from app.services import user_service
 
