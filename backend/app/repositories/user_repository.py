@@ -20,7 +20,6 @@ def add_user(user:user_schema.UserCreate, session):
     hashed = password.secure_hash(user.password)
     fingerprint = uuid4().hex
     apikey = password.fast_hash(fingerprint)
-
     new_user = User(
         username=user.username,
         email=user.email,
@@ -28,12 +27,10 @@ def add_user(user:user_schema.UserCreate, session):
         api_key=apikey,
         fingerprint=fingerprint,
     )
-
     session.add(new_user)
     session.commit()
-    session.refresh(new_user)
-
-    return new_user
+    users = session.exec(select(User)).all()
+    return users
 
 
 def delete_user(id: int, session):
@@ -45,3 +42,7 @@ def delete_user(id: int, session):
     session.commit()
     remaining = session.exec(select(User)).all()
     return remaining
+
+
+# def update_user(id: int, session, <whatever field to modify>) -> user_schema.UserRead:
+#     return user

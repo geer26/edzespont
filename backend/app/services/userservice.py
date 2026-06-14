@@ -15,8 +15,10 @@ class UserService():
         return user_schema.UserRead.model_validate(user)
 
     async def add_user(self, user: user_schema.UserCreate, session):
-        new_user = user_repo.add_user(user, session)
-        return user_schema.UserRead.model_validate(new_user)
+        users = user_repo.add_user(user, session)
+        if users is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        return [user_schema.UserRead.model_validate(u) for u in users]
 
     async def delete_user(self, id: int, session):
         users = user_repo.delete_user(id, session)
