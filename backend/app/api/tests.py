@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Body, Cookie, Header
 from app.core.config import SettingsDep
 from app.core.db import DbSessionDep
 from app.models import User
-from app.api.tags import Tags
+from app.api.enums import Tags
 
 
 tests_router = APIRouter()

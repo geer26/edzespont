@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Body, Cookie, Header, status
 from app.core.db import DbSessionDep
 from app.schemas import user_schema
 from app.services import user_service
-from app.api.tags import Tags
+from app.api.enums import Tags
 
 
 user_router = APIRouter()

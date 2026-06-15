@@ -11,4 +11,4 @@
 #8.restart container - alembic auto updates
 
 on error check:
-    change sqlmodel.sql.sqltypes.AutoString() to sa.String()in the migration file
+    change sqlmodel.sql.sqltypes.AutoString() to sa.String() in the migration file

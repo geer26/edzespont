@@ -26,6 +26,8 @@ class User(SQLModel, table=True):
 
     is_active: bool = Field(default=True, nullable=False)
 
+    level: str
+
     failed_login_attempt: int = Field(default=0)
 
     created_at: datetime = Field(

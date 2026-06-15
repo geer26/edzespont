@@ -21,6 +21,27 @@ class Profile(SQLModel, table=True):
     gender: str
     height: int
     weight: int
+    avatar_url: str
+    bio: str
+
+    created_at: datetime = Field(
+        default=None,
+        sa_column=Column(
+            DateTime(timezone=False),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+    updated_at: datetime = Field(
+        default=None,
+        sa_column=Column(
+            DateTime(timezone=False),
+            server_default=func.now(),
+            onupdate=func.now(),
+            nullable=False,
+        )
+    )
 
     # one-to-one: profile → user
     user: Optional["User"] = Relationship(back_populates="profile")
