@@ -110,24 +110,24 @@ services:
 #< ----------------------- >
 
 
-  edzespont_migrate:
-    container_name: edzespont_migrate
-    hostname: edzespont_migrate
-
-    build:
-        context: ./backend
-        dockerfile: ./dockerfile.dev
-
-    volumes:
-        - ./backend/:/edzespont_backend/:rw
-
-    env_file:
-        - ./envs/.dev_env
-
-    command: alembic upgrade head
-
-    restart: "no"
-
-    depends_on:
-        edzespont_db:
-          condition: service_started
+#  edzespont_migrate:
+#    container_name: edzespont_migrate
+#    hostname: edzespont_migrate
+#
+#    build:
+#        context: ./backend
+#        dockerfile: ./dockerfile.dev
+#
+#    volumes:
+#        - ./backend/:/edzespont_backend/:rw
+#
+#    env_file:
+#        - ./envs/.dev_env
+#
+#    command: alembic upgrade head
+#
+#    restart: "no"
+#
+#    depends_on:
+#        edzespont_db:
+#          condition: service_started

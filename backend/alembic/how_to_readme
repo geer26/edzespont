@@ -1,13 +1,14 @@
 1. cd into backend
 2. activate venv
-3. change sqlalchemy.url in alembic.ini
-    sqlalchemy.url = postgresql+psycopg2://geer26:726354Valami01%%3F@edzespont_db:5432/edzespont
-    #sqlalchemy.url = postgresql+psycopg2://geer26:726354Valami01%%3F@localhost:5432/edzespont
+#3. change sqlalchemy.url in alembic.ini
+#    sqlalchemy.url = postgresql+psycopg2://geer26:726354Valami01%%3F@edzespont_db:5432/edzespont
+#    #sqlalchemy.url = postgresql+psycopg2://geer26:726354Valami01%%3F@localhost:5432/edzespont
 4. alembic revision --autogenerate -m "<some_meaningful_message>"
 5. ALWAYS check the generated migration file!!!
     change sqlmodel.sql.sqltypes.AutoString() to sa.String()in the migration file
-5. change sqlalchemy.url back
-6.restart container - alembic auto updates
+6. alembic upgrade head
+#7. change sqlalchemy.url back
+#8.restart container - alembic auto updates
 
 on error check:
     change sqlmodel.sql.sqltypes.AutoString() to sa.String()in the migration file
