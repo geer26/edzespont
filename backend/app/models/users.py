@@ -1,6 +1,8 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, DateTime, func, String
 from datetime import datetime
+from typing import Optional
+
 
 
 class User(SQLModel, table=True):
@@ -44,3 +46,6 @@ class User(SQLModel, table=True):
             nullable=False,
         )
     )
+
+    # one - to - one: user → profile
+    profile: Optional["Profile"] = Relationship(back_populates="user")
