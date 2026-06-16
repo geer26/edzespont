@@ -2,19 +2,18 @@ from app.models import User
 from app.core import password
 from app.schemas import user_schema
 from uuid import uuid4
+from sqlalchemy import select
 
+async def get_all_users(session) -> list[user_schema.UserRead]:
+    stmt = await session.execute(select(User).order_by(User.created_at.desc()))
+    users = stmt.scalars().all()
+    return [user_schema.UserRead.model_validate(user) for user in users]
 
-def get_all_users(session) -> list[user_schema.UserRead]:
-    statement = select(User)
-    return session.exec(statement).all()
+async def get_user_by_id(id, session) -> user_schema.UserRead | None:
+    result = await session.execute(select(User).where(User.id == id))
+    return result.scalars().one_or_none()
 
-
-def get_user_by_id(id: int, session) -> user_schema.UserRead:
-    statement = select(User).where(User.id == id)
-    return session.exec(statement).one_or_none()
-
-
-def add_user(user:user_schema.UserCreate, session):
+async def add_user(user: user_schema.UserCreate, session):
     hashed = password.secure_hash(user.password)
     fingerprint = uuid4().hex
     apikey = password.fast_hash(fingerprint)
@@ -26,21 +25,16 @@ def add_user(user:user_schema.UserCreate, session):
         fingerprint=fingerprint,
     )
     session.add(new_user)
-    session.commit()
-    users = session.exec(select(User)).all()
-    return users
+    await session.commit()
+    await session.refresh(new_user)
+    return user_schema.UserRead.model_validate(new_user)
 
-
-def delete_user(id: int, session):
-    statement = select(User).where(User.id == id)
-    user = session.exec(statement).one_or_none()
+async def delete_user(id, session):
+    result = await session.execute(select(User).where(User.id == id))
+    user = result.scalars().one_or_none()
     if not user:
         return None
-    session.delete(user)
-    session.commit()
-    remaining = session.exec(select(User)).all()
-    return remaining
-
-
-# def update_user(id: int, session, <whatever field to modify>) -> user_schema.UserRead:
-#     return user
+    await session.delete(user)
+    await session.commit()
+    remaining = await session.execute(select(User))
+    return remaining.scalars().all()

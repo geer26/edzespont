@@ -1,5 +1,6 @@
 from sqlmodel import SQLModel
 from datetime import datetime
+from uuid import UUID
 
 
 class UserCreate(SQLModel):
@@ -9,12 +10,13 @@ class UserCreate(SQLModel):
 
 
 class UserRead(SQLModel):
-    id: int
+    id: UUID
     username: str
     email: str
     is_active: bool
     created_at: datetime
     failed_login_attempt: int
+
 
 class UserUpdate(SQLModel):
     password: str | None = None

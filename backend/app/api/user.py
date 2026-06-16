@@ -3,6 +3,7 @@ from app.core.db import DbSessionDep
 from app.schemas import user_schema
 from app.services import user_service
 from app.api.enums import Tags
+from uuid import UUID
 
 
 user_router = APIRouter()
@@ -14,7 +15,7 @@ async def read_all_user(session: DbSessionDep):
 
 
 @user_router.get("/users/{userid}", response_model=user_schema.UserRead, tags=[Tags.user])
-async def get_user_by_id(userid: int, session: DbSessionDep):
+async def get_user_by_id(userid: UUID, session: DbSessionDep):
     return await user_service.get_user_by_id(userid, session)
 
 
@@ -24,5 +25,5 @@ async def add_user(user: user_schema.UserCreate, session: DbSessionDep):
 
 
 @user_router.delete("/users/{userid}", response_model=list[user_schema.UserRead], tags=[Tags.user])
-async def delete_user(userid: int, session: DbSessionDep):
+async def delete_user(userid: UUID, session: DbSessionDep):
     return await user_service.delete_user(userid, session)
