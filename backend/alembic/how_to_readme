@@ -12,3 +12,6 @@
 
 on error check:
     change sqlmodel.sql.sqltypes.AutoString() to sa.String() in the migration file
+
+with sqlite own the db file:
+    sudo chown $USER:$USER ./test.db
