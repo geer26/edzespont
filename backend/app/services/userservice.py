@@ -15,7 +15,7 @@ class UserService():
             raise HTTPException(status_code=404, detail="User not found")
         return user_schema.UserRead.model_validate(user)
 
-    async def add_user(self, user: user_schema.UserCreate, session):
+    async def add_user(self, user: user_schema.UserCreate, session) -> list[user_schema.UserRead]:
         new_user = await user_repo.add_user(user, session)
         if new_user is None:
             raise HTTPException(status_code=409, detail="Email or username already exists")
