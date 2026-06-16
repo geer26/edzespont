@@ -1,47 +1,30 @@
-from sqlmodel import Field, SQLModel, Relationship
-from sqlalchemy import Column, DateTime, func, String
+import uuid
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from sqlalchemy import Integer, String, Text, DateTime, ForeignKey, Column
+from sqlalchemy.dialects.postgresql import UUID
+from .base import Base
 
-if TYPE_CHECKING:
-    from .users import User  # only imported for type checkers, not at runtime
 
 
-class Profile(SQLModel, table=True):
+class Profile(Base):
     __tablename__ = "profiles"
 
-    id: int | None = Field(default=None, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+    gender = Column(String, nullable=True)
+    avatar_url = Column(String, nullable=True)
+    bio = Column(Text, nullable=True)
+    dob = Column(DateTime, nullable=True)
+    height = Column(Integer, nullable=True)
+    weight = Column(Integer, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime)
+
 
     # FK lives on Profile (the "child" side of the 1-to-1)
-    user_id: int = Field(foreign_key="users.id", unique=True, index=True, nullable=False)
-
-    first_name: str
-    last_name: str
-    dob: datetime
-    gender: str
-    height: int
-    weight: int
-    avatar_url: str
-    bio: str
-
-    created_at: datetime = Field(
-        default=None,
-        sa_column=Column(
-            DateTime(timezone=False),
-            server_default=func.now(),
-            nullable=False,
-        )
-    )
-
-    updated_at: datetime = Field(
-        default=None,
-        sa_column=Column(
-            DateTime(timezone=False),
-            server_default=func.now(),
-            onupdate=func.now(),
-            nullable=False,
-        )
-    )
-
+    # user_id: int = Field(foreign_key="users.id", unique=True, index=True, nullable=False)
     # one-to-one: profile → user
-    user: Optional["User"] = Relationship(back_populates="profile")
+    # user: Optional["User"] = Relationship(back_populates="profile")

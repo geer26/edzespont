@@ -1,7 +1,5 @@
-from fastapi import APIRouter, Request, Body, Cookie, Header
+from fastapi import APIRouter
 from app.core.config import SettingsDep
-from app.core.db import DbSessionDep
-from app.models import User
 from app.api.enums import Tags
 
 

@@ -1,37 +1,21 @@
-from sqlmodel import create_engine
-from sqlmodel import Session as SQLModelSession
-from sqlmodel import SQLModel
+from collections.abc import AsyncGenerator
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from ..models import Base
 from typing import Annotated
 from fastapi import Depends
 
-from app.core.config import get_settings
+DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
-engine = None
-SessionLocal = None
+engine = create_async_engine(DATABASE_URL)
+async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-def init_db():
-    """
-    Called during lifespan startup.
-    """
-    
-    global engine, SessionLocal
-
-    settings = get_settings()
-
-    engine = create_engine(
-            get_settings().db_connection_string
-        )
-    
-    SQLModel.metadata.create_all(engine)
-
-    engine = create_engine(
-        settings.db_connection_string
-    )
-
-def get_session():
-    with SQLModelSession(engine) as session:
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
         yield session
 
-
-DbSessionDep = Annotated[SQLModelSession, Depends(get_session)]
+DbSessionDep = Annotated[AsyncGenerator, Depends(get_async_session)]

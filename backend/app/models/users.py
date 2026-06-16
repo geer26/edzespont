@@ -1,53 +1,21 @@
-from sqlmodel import Field, SQLModel, Relationship
-from sqlalchemy import Column, DateTime, func, String
+import uuid
 from datetime import datetime
-from typing import Optional
+from sqlalchemy import Boolean, Integer, String, DateTime, ForeignKey, Column
+from sqlalchemy.dialects.postgresql import UUID
+from .base import Base
 
-
-
-class User(SQLModel, table=True):
+class User(Base):
     __tablename__ = "users"
 
-    id: int | None = Field(default=None, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password_hash = Column(String)
+    api_key = Column(String, nullable=True)
+    fingerprint = Column(String, nullable=True)
+    is_active = Column(Boolean, default=True)
+    level = Column(String, nullable=True)
+    failed_login_attempt = Column(Integer, default=0)
 
-    username: str = Field(
-        sa_column=Column(String(50), unique=True, index=True, nullable=False)
-    )
-
-    email: str = Field(
-        sa_column=Column(String(255), unique=True, index=True, nullable=False)
-    )
-
-    password_hash: str = Field(nullable=False)
-
-    api_key: str
-
-    fingerprint: str
-
-    is_active: bool = Field(default=True, nullable=False)
-
-    level: str
-
-    failed_login_attempt: int = Field(default=0)
-
-    created_at: datetime = Field(
-        default=None,
-        sa_column=Column(
-            DateTime(timezone=False),
-            server_default=func.now(),
-            nullable=False,
-        )
-    )
-
-    updated_at: datetime = Field(
-        default=None,
-        sa_column=Column(
-            DateTime(timezone=False),
-            server_default=func.now(),
-            onupdate=func.now(),
-            nullable=False,
-        )
-    )
-
-    # one - to - one: user → profile
-    profile: Optional["Profile"] = Relationship(back_populates="user")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime)

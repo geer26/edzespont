@@ -1,5 +1,3 @@
-from sqlmodel import select, Session as SQLModelSession
-from app.core.db import DbSessionDep
 from app.models import User
 from app.core import password
 from app.schemas import user_schema
