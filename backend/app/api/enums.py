@@ -12,3 +12,9 @@ class UserLevels(Enum):
     coach = "COACH",
     client = "CLIENT",
     guest = "GUEST"
+
+
+class Gender(Enum):
+    male = "Male",
+    female = "Female",
+    other = "Other"

@@ -1,4 +1,3 @@
 
-# from .profiles import Profile
-# from .base import Base
-from .sm_user import User
+from .profiles import Profile
+from .users import User

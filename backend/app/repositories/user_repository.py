@@ -32,7 +32,7 @@ async def add_user(user: user_schema.UserCreate, session):
         session.add(new_user)
         session.commit()
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exist")
     session.refresh(new_user)
     return user_schema.UserRead.model_validate(new_user)
 
