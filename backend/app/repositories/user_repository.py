@@ -1,17 +1,21 @@
+from http import HTTPMethod
+from fastapi import HTTPException, status
 from app.models import User
 from app.core import password
 from app.schemas import user_schema
 from uuid import uuid4
-from sqlalchemy import select
+from sqlmodel import select
+
 
 async def get_all_users(session) -> list[user_schema.UserRead]:
-    stmt = await session.execute(select(User).order_by(User.created_at.desc()))
-    users = stmt.scalars().all()
+    users = session.exec(select(User)).all()
     return [user_schema.UserRead.model_validate(user) for user in users]
 
 async def get_user_by_id(id, session) -> user_schema.UserRead | None:
-    result = await session.execute(select(User).where(User.id == id))
-    return result.scalars().one_or_none()
+    user = session.get(User, id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist")
+    return user
 
 async def add_user(user: user_schema.UserCreate, session):
     hashed = password.secure_hash(user.password)
@@ -24,17 +28,22 @@ async def add_user(user: user_schema.UserCreate, session):
         api_key=apikey,
         fingerprint=fingerprint,
     )
-    session.add(new_user)
-    await session.commit()
-    await session.refresh(new_user)
+    try:
+        session.add(new_user)
+        session.commit()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
+    session.refresh(new_user)
     return user_schema.UserRead.model_validate(new_user)
 
 async def delete_user(id, session):
-    result = await session.execute(select(User).where(User.id == id))
-    user = result.scalars().one_or_none()
+    user = session.get(User, id)
     if not user:
         return None
-    await session.delete(user)
-    await session.commit()
-    remaining = await session.execute(select(User))
-    return remaining.scalars().all()
+    try:
+        session.delete(user)
+        session.commit()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    users = session.exec(select(User)).all()
+    return [user_schema.UserRead.model_validate(user) for user in users]

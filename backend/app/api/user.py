@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from app.core.db import DbSessionDep
+from app.core.smdb import SessionDep as DbSessionDep
 from app.schemas import user_schema
 from app.services import user_service
 from app.api.enums import Tags
